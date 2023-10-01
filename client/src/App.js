@@ -43,7 +43,7 @@ const App = () => {
           <Link
             href={'https://github.com/samcasmmm/ReactStableDiffusion/tree/main'}
           >
-            Github Repo
+            Github
           </Link>
         </Text>
         <Wrap marginBottom={'10px'}>
