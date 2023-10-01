@@ -1,3 +1,5 @@
+import React, { useState } from 'react';
+import axios from 'axios';
 import {
   ChakraProvider,
   Heading,
@@ -6,47 +8,51 @@ import {
   Input,
   Button,
   Wrap,
-  Stack, 
+  Stack,
   Image,
   Link,
   SkeletonCircle,
   SkeletonText,
-} from "@chakra-ui/react";
-import axios from "axios";
-import { useState } from "react";
+} from '@chakra-ui/react';
 
 const App = () => {
-  const [image, updateImage] = useState();
-  const [prompt, updatePrompt] = useState();
-  const [loading, updateLoading] = useState();
+  const [image, updateImage] = useState(null);
+  const [prompt, updatePrompt] = useState('');
+  const [loading, updateLoading] = useState(false);
 
-  const generate = async (prompt) => {
+  const generate = async () => {
     updateLoading(true);
-    const result = await axios.get(`http://127.0.0.1:8000/?prompt=${prompt}`);
-    updateImage(result.data);
-    updateLoading(false);
+    try {
+      const result = await axios.get(`http://127.0.0.1:8000/?prompt=${prompt}`);
+      updateImage(result.data);
+    } catch (error) {
+      console.error('Error fetching image:', error);
+    } finally {
+      updateLoading(false);
+    }
   };
 
   return (
     <ChakraProvider>
       <Container>
-        <Heading>Stable DIffusion🚀</Heading>
-        <Text marginBottom={"10px"}>
+        <Heading>Stable Diffusion🚀</Heading>
+        <Text marginBottom={'10px'}>
           This react application leverages the model trained by Stability AI and
           Runway ML to generate images using the Stable Diffusion Deep Learning
-          model. The model can be found via github here{" "}
-          <Link href={"https://github.com/CompVis/stable-diffusion"}>
+          model. The model can be found via github here{' '}
+          <Link
+            href={'https://github.com/samcasmmm/ReactStableDiffusion/tree/main'}
+          >
             Github Repo
           </Link>
         </Text>
-
-        <Wrap marginBottom={"10px"}>
+        <Wrap marginBottom={'10px'}>
           <Input
             value={prompt}
             onChange={(e) => updatePrompt(e.target.value)}
-            width={"350px"}
-          ></Input>
-          <Button onClick={(e) => generate(prompt)} colorScheme={"yellow"}>
+            width={'350px'}
+          />
+          <Button onClick={generate} colorScheme='yellow'>
             Generate
           </Button>
         </Wrap>
@@ -57,7 +63,7 @@ const App = () => {
             <SkeletonText />
           </Stack>
         ) : image ? (
-          <Image src={`data:image/png;base64,${image}`} boxShadow="lg" />
+          <Image src={`data:image/png;base64,${image}`} boxShadow='lg' />
         ) : null}
       </Container>
     </ChakraProvider>
